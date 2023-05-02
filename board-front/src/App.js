@@ -1,7 +1,7 @@
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Join from './pages/Join'
-import Login from './pages/Login'
+import Logon from './pages/Logon'
 import { useNavigate, Route, Routes } from 'react-router-dom';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import Board from './pages/Board';
@@ -10,19 +10,19 @@ import { useState } from 'react';
 
 function App() {
   let navigate = useNavigate()
-  let [user, setUser] = useState({id: 'sadf', userName: null, userLevel: 'A'})
+  let [user, setUser] = useState({id: null, userName: null, userLevel: null})
 
   return (
     <div className='App'>
       <Navbar bg="dark" variant="dark">
         <Container>
-          <Navbar.Brand onClick={() => { navigate('/') }}>Zzal Store</Navbar.Brand>
+          <Navbar.Brand onClick={() => { navigate('/') }}>웹페이지</Navbar.Brand>
           <Nav className="me-auto">
             {
               user === null || typeof user === 'undefined' || user.id === null || String(user.id).length === 0 ?
                 <>
                   <Nav.Link onClick={() => { navigate('/join') }}>회원가입</Nav.Link>
-                  <Nav.Link onClick={() => { navigate('/login') }}>로그인</Nav.Link>
+                  <Nav.Link onClick={() => { navigate('/logon') }}>로그인</Nav.Link>
                 </>
                 :
                 null
@@ -36,7 +36,7 @@ function App() {
       </Navbar>
       <Routes>
         <Route path='/' element={<h1>메인페이지</h1>} />
-        <Route path='/login' element={<Login />} />
+        <Route path='/logon' element={<Logon />} />
         <Route path='/join' element={<Join />} />
         <Route path='/board' element={<Board/>}/>
         <Route path='/admin' element={<AdminPage />}>
