@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.util.Date;
@@ -14,6 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 @Getter
+@Setter
 @Table(name="TB_USER")
 public class User {
     @Id
@@ -41,7 +43,7 @@ public class User {
     private Date pwChgDate;
 
     @Column
-    private int loginFailCnt;
+    private Integer loginFailCnt;
 
     @Column
     private String expireChk;

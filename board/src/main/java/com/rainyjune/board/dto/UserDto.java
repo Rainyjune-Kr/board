@@ -30,7 +30,7 @@ public class UserDto {
     @JsonProperty("pw_chg_date")
     private Date pwChgDate;
     @JsonProperty("login_fail_cnt")
-    private int loginFailCnt;
+    private Integer loginFailCnt;
     @JsonProperty("expire_chk")
     private String expireChk;
     @JsonProperty("create_date")

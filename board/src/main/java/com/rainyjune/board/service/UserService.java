@@ -14,8 +14,11 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<UserDto> findAll() {
+        return userRepository.findAll()
+                .stream()
+                .map(user -> UserDto.createUserDto(user))
+                .collect(Collectors.toList());
     }
 
     public List<UserDto> findUserById(String userId) {
