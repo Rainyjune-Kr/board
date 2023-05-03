@@ -1,8 +1,7 @@
-package com.rainyjune.board.dto;
+package com.rainyjune.board.admin.userList.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.rainyjune.board.entity.User;
-import jakarta.persistence.Column;
+import com.rainyjune.board.admin.userList.entity.UserListEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Getter
 @ToString
-public class UserDto {
+public class UserListDto {
     @JsonProperty("user_id")
     private String userId;
     private String password;
@@ -42,22 +41,22 @@ public class UserDto {
     @JsonProperty("update_user")
     private String updateUser;
 
-    public static UserDto createUserDto(User user) {
-        UserDto resultObj = new UserDto(
-                user.getUserId(),
-                user.getPassword(),
-                user.getUserName(),
-                user.getUserLevel(),
-                user.getPhoneNumber(),
-                user.getEmail(),
-                user.getLastLoginDate(),
-                user.getPwChgDate(),
-                user.getLoginFailCnt(),
-                user.getExpireChk(),
-                user.getCreateDate(),
-                user.getCreateUser(),
-                user.getUpdateDate(),
-                user.getUpdateUser()
+    public static UserListDto createUserDto(UserListEntity userListEntity) {
+        UserListDto resultObj = new UserListDto(
+                userListEntity.getUserId(),
+                userListEntity.getPassword(),
+                userListEntity.getUserName(),
+                userListEntity.getUserLevel(),
+                userListEntity.getPhoneNumber(),
+                userListEntity.getEmail(),
+                userListEntity.getLastLoginDate(),
+                userListEntity.getPwChgDate(),
+                userListEntity.getLoginFailCnt(),
+                userListEntity.getExpireChk(),
+                userListEntity.getCreateDate(),
+                userListEntity.getCreateUser(),
+                userListEntity.getUpdateDate(),
+                userListEntity.getUpdateUser()
         );
 
         return resultObj;

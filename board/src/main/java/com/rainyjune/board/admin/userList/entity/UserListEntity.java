@@ -1,4 +1,4 @@
-package com.rainyjune.board.entity;
+package com.rainyjune.board.admin.userList.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,17 +17,18 @@ import java.util.Date;
 @Getter
 @Setter
 @Table(name="TB_USER")
-public class User {
+public class UserListEntity {
     @Id
+    @Column(name="user_id")
     private String userId;
 
     @Column
     private String password;
 
-    @Column
+    @Column(name="user_name")
     private String userName;
 
-    @Column
+    @Column(name="user_level")
     private String userLevel;
 
     @Column
@@ -48,10 +49,10 @@ public class User {
     @Column
     private String expireChk;
 
-    @Column
+    @Column(name="create_date")
     private Date createDate;
 
-    @Column
+    @Column(name="create_user")
     private String createUser;
 
     @Column
