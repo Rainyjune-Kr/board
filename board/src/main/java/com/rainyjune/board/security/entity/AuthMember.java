@@ -26,6 +26,9 @@ public class AuthMember {
     @Column(name="user_level", nullable = false)
     private String userLevel;
 
+    @Column(name="token_weight")
+    private Long tokenWeight;
+
     @ManyToMany
     @JoinTable(
             name = "tb_user_role",
@@ -38,4 +41,8 @@ public class AuthMember {
 
     @Column(name="create_date", nullable = false)
     private Date createDate;
+
+    public void increaseTokenWeight() {
+        this.tokenWeight++;
+    }
 }

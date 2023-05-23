@@ -1,5 +1,6 @@
-package com.rainyjune.board.provider;
+package com.rainyjune.board.security.provider;
 
+import com.rainyjune.board.redis.service.RedisService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -23,13 +24,13 @@ public class TokenProvider {
     protected static final String AUTHORITIES_KEY = "auth";
 
     protected final String secret;
-    protected final long tokenValidityInMilliseconds;
+    protected final long tokenValidMinutes;
 
     protected Key key;
 
-    public TokenProvider(String secret, long tokenValidityInMilliseconds) {
+    public TokenProvider(String secret, long tokenValidMinutes) {
         this.secret = secret;
-        this.tokenValidityInMilliseconds = tokenValidityInMilliseconds;
+        this.tokenValidMinutes = tokenValidMinutes;
 
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
@@ -42,7 +43,29 @@ public class TokenProvider {
                 .collect(Collectors.joining(","));
 
         long now = (new Date()).getTime();
-        Date validity = new Date(now + this.tokenValidityInMilliseconds);
+        Date validity = new Date(now + (this.tokenValidMinutes * 1000L * 60));
+
+        return Jwts.builder()
+                .setSubject(authentication.getName())
+                .claim(AUTHORITIES_KEY, authorities)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .setExpiration(validity)
+                .compact();
+    }
+
+    public String createToken(Authentication authentication, String refreshToken) {
+        String authorities = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        long now = (new Date()).getTime();
+        Date validity = new Date(now + (this.tokenValidMinutes * 1000L * 60));
+
+        Date expirationDate = getTokenExpirationDate(refreshToken);
+        if (expirationDate.before(validity)) {
+            validity = (Date) expirationDate.clone();
+        }
 
         return Jwts.builder()
                 .setSubject(authentication.getName())
@@ -87,5 +110,31 @@ public class TokenProvider {
         return false;
     }
 
+    public Long getValidTokenMinutes() {
+        return this.tokenValidMinutes;
+    }
 
+    public Long getTokenExpirationTime(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        Long expirationTime = claims.getExpiration().getTime();
+
+        return expirationTime;
+    }
+
+    public Date getTokenExpirationDate(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        Date expirationDate = claims.getExpiration();
+
+        return expirationDate;
+    }
 }

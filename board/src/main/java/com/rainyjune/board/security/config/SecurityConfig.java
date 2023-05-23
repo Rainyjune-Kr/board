@@ -1,14 +1,19 @@
 package com.rainyjune.board.security.config;
 
-import com.rainyjune.board.provider.TokenProvider;
+import com.rainyjune.board.security.provider.RefreshTokenProvider;
+import com.rainyjune.board.security.provider.TokenProvider;
 import com.rainyjune.board.security.JwtAccessDeniedHandler;
 import com.rainyjune.board.security.JwtAuthEntryPoint;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +29,9 @@ public class SecurityConfig {
     private TokenProvider tokenProvider;
 
     @Autowired
+    private RefreshTokenProvider refreshTokenProvider;
+
+    @Autowired
     private CorsFilter corsFilter;
 
     @Autowired
@@ -35,6 +43,11 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
     @Bean
@@ -57,7 +70,12 @@ public class SecurityConfig {
 //                .requestMatchers("/users").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .apply(new JwtSecurityConfig(tokenProvider));
+                .apply(new JwtSecurityConfig(tokenProvider, refreshTokenProvider));
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 }

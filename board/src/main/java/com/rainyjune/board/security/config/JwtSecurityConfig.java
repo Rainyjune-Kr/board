@@ -1,6 +1,7 @@
 package com.rainyjune.board.security.config;
 
-import com.rainyjune.board.provider.TokenProvider;
+import com.rainyjune.board.security.provider.RefreshTokenProvider;
+import com.rainyjune.board.security.provider.TokenProvider;
 import com.rainyjune.board.security.util.JwtFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +15,12 @@ public class JwtSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurity
     @Autowired
     private TokenProvider tokenProvider;
 
+    @Autowired
+    private RefreshTokenProvider refreshTokenProvider;
+
     @Override
     public void configure(HttpSecurity http) {
-        JwtFilter customFilter = new JwtFilter(tokenProvider);
+        JwtFilter customFilter = new JwtFilter(tokenProvider, refreshTokenProvider);
         http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

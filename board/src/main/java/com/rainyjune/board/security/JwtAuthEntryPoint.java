@@ -14,6 +14,7 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
         // return 401 error.
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setCharacterEncoding("utf-8");
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "잘못된 접근입니다");
     }
 }
